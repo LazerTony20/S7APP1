@@ -21,6 +21,26 @@ if __name__ == '__main__':
                 print(result)
                 # Query the information in the file
                 result = prolog_thread.query("fils(luc, X).")
+        with PrologMQI() as mqi_file:
+            print("============= NUMERO 1 =============")
+            with mqi_file.create_thread() as prolog_thread:
+                # Load a prolog file
+                result = prolog_thread.query("[prolog/num1].")
+                # print(result)
+
+                # Query the information in the file
+                result = prolog_thread.query("repas(pate, porc, X).")
+                print("\nVoici la sortie de repas(pate, porc, X) :")
+                print(result)
+
+                # Query the information in the file
+                result = prolog_thread.query("repasLeger(pate, porc, X).")
+                print("\nVoici la sortie de repasLeger(pate, porc, X) :")
+                print(result)
+
+                # Query the information in the file
+                result = prolog_thread.query("repasLeger(X, Y, glace).")
+                print("\nVoici la sortie de repasLeger(X, Y, glace) :")
                 print(result)
 
 
