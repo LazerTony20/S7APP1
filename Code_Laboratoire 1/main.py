@@ -12,15 +12,37 @@ if __name__ == '__main__':
             print(result)
 
         with PrologMQI() as mqi_file:
+            print("============= Intro =============")
             with mqi_file.create_thread() as prolog_thread:
                 # Load a prolog file
                 result = prolog_thread.query("[prolog/parente].")
                 print(result)
+
                 # Query the information in the file
                 result = prolog_thread.query("homme(X).")
+                print("\nVoici la liste des hommes :")
                 print(result)
+
                 # Query the information in the file
                 result = prolog_thread.query("fils(luc, X).")
+                print("\nVoici le parent de luc :")
+                print(result)
+
+                # Query the information in the file
+                result = prolog_thread.query("enfant(louis, X).")
+                print("\nVoici les parents de louis :")
+                print(result)
+
+                # Query the information in the file
+                result = prolog_thread.query("grandparent(X, louise).")
+                print("\nVoici les grand-parents de louise :")
+                print(result)
+
+                # Query the information in the file
+                result = prolog_thread.query("frere(louis, X).")
+                print("\nVoici les freres de louis :")
+                print(result)
+
         with PrologMQI() as mqi_file:
             print("============= NUMERO 1 =============")
             with mqi_file.create_thread() as prolog_thread:

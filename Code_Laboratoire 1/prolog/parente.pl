@@ -29,10 +29,7 @@ grandparent(X, Z) :- parent(X, Y), parent(Y,Z).
 
 fils(E, P):- homme(E), parent(P, E).
 
-
-
-
-
+frere(X, Y):- fils(Y, P), parent(P, X), X \== Y.
 
 
 
