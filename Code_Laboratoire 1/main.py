@@ -3,11 +3,13 @@
 # Laboratoire 1 - Interaction avec prolog
 
 from swiplserver import PrologMQI
-
+import os
 
 if __name__ == '__main__':
+    os.system("cls")
     with PrologMQI() as mqi:
         with mqi.create_thread() as prolog_thread:
+            print("============= Checkup =============")
             result = prolog_thread.query("member(X, [first, second, third]).")
             print(result)
 
