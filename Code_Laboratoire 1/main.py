@@ -66,5 +66,20 @@ if __name__ == '__main__':
                 result = prolog_thread.query("repasLeger(X, Y, glace).")
                 print("\nVoici la sortie de repasLeger(X, Y, glace) :")
                 print(result)
+        
+        with PrologMQI() as mqi_file:
+            print("============= NUMERO 2 =============")
+            with mqi_file.create_thread() as prolog_thread:
+                # Load a prolog file
+                result = prolog_thread.query("[prolog/num2].")
+                # print(result)
+
+                # Query the information in the file
+                print(prolog_thread.query("un_sur_deux([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],X)."))
+                # print("\nVoici la sortie :")
+                # print(result)
 
 
+print("\n=======================================")
+
+ 
