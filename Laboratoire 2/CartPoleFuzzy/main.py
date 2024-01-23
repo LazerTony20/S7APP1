@@ -28,9 +28,9 @@ def createFuzzyController():
     #    'mom'     : mean of maximum
     #    'som'     : min of maximum
     #    'lom'     : max of maximum
-    ant1 = ctrl.Antecedent(np.linspace(-1, 1, 1000), 'input1')
-    ant2 = ctrl.Antecedent(np.linspace(-1, 1, 1000), 'input2')
-    cons1 = ctrl.Consequent(np.linspace(-1, 1, 1000), 'output1', defuzzify_method='centroid')
+    ant1 = ctrl.Antecedent(np.linspace(-1, 1, 1000), 'angle_pole')
+    #ant2 = ctrl.Antecedent(np.linspace(-1, 1, 1000), 'cart_pos')
+    cons1 = ctrl.Consequent(np.linspace(-10, 10, 1000), 'output1', defuzzify_method='centroid')
 
     # Accumulation (accumulation_method) methods for fuzzy variables:
     #    np.fmax
@@ -38,16 +38,25 @@ def createFuzzyController():
     cons1.accumulation_method = np.fmax
 
     # TODO: Create membership functions
-    ant1['membership1'] = fuzz.trapmf(ant1.universe, [-1, -0.5, 0.5, 1])
-    ant1['membership2'] = fuzz.trapmf(ant1.universe, [-0.75, -0.5, 0.5, 0.75])
+    ant1['angle_much_left'] = fuzz.trapmf(ant1.universe, [-1, -1, -0.5, 0])
+    ant1['angle_much_right'] = fuzz.trapmf(ant1.universe, [0, 0.5, 1, 1])
+    ant1['angle_little_left'] = fuzz.trimf(ant1.universe, [-0.5, -0.25, 0.25])
+    ant1['angle_little_right'] = fuzz.trimf(ant1.universe, [-0.25, 0.25, 0.5])
 
-    ant2['membership1'] = fuzz.trapmf(ant1.universe, [-1, -0.5, 0.5, 1])
+    #ant2['membership1'] = fuzz.trapmf(ant1.universe, [-1, -0.5, 0.5, 1])
 
-    cons1['membership1'] = fuzz.trimf(cons1.universe, [-1, 0, 1])
+    cons1['force_much_left'] = fuzz.trapmf(cons1.universe, [-10, -10, -3, 1])
+    cons1['force_much_right'] = fuzz.trapmf(cons1.universe, [-1, 3, 10, 10])
+    cons1['force_little_left'] = fuzz.trimf(cons1.universe, [-2, -1, 0])
+    cons1['force_little_right'] = fuzz.trimf(cons1.universe, [0, 1, 2])
 
     # TODO: Define the rules.
     rules = []
-    rules.append(ctrl.Rule(antecedent=(ant1['membership1'] & ant2['membership1']), consequent=cons1['membership1']))
+    # rules.append(ctrl.Rule(antecedent=(ant1['membership1'] & ant1['membership2'] & ant1['membership3'] & ant1['membership4'] & ant2['membership1']), consequent=cons1['membership1']))
+    rules.append(ctrl.Rule(antecedent=(ant1['angle_much_left']), consequent=cons1['force_much_left']))
+    rules.append(ctrl.Rule(antecedent=(ant1['angle_much_right']), consequent=cons1['force_much_right']))
+    rules.append(ctrl.Rule(antecedent=(ant1['angle_little_left']), consequent=cons1['force_little_left']))
+    rules.append(ctrl.Rule(antecedent=(ant1['angle_little_right']), consequent=cons1['force_little_right']))
 
     # Conjunction (and_func) and disjunction (or_func) methods for rules:
     #     np.fmin
@@ -86,7 +95,7 @@ if __name__ == '__main__':
 
         isSuccess = True
         action = np.array([0.0], dtype=np.float32)
-        for _ in range(100):
+        for _ in range(1000):
             env.render()
             time.sleep(0.01)
 
@@ -101,8 +110,8 @@ if __name__ == '__main__':
             cartPosition, cartVelocity, poleAngle, poleVelocityAtTip = observation
 
             # TODO: set the input to the fuzzy system
-            fuzz_ctrl.input['input1'] = 0
-            fuzz_ctrl.input['input2'] = 0
+            fuzz_ctrl.input['angle_pole'] = poleAngle
+            #fuzz_ctrl.input['cart_pos'] = 0
 
             fuzz_ctrl.compute()
             if VERBOSE:
