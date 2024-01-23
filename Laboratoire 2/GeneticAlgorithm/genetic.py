@@ -108,6 +108,7 @@ class Genetic:
     def get_best_individual(self):
         # Prints the best individual for all of the simulated generations
         # TODO : Decode individual for better readability
+
         return self.bestIndividual
 
     def encode_individuals(self):
@@ -118,6 +119,10 @@ class Genetic:
         # Output:
         # - POPULATION, a binary matrix with each row encoding an individual.
         # TODO: encode individuals into binary vectors
+
+        # Regénération car la pop est vide
+        self.population = np.random.uniform(-3,3,self.pop_size)
+
         self.population = np.zeros((self.pop_size, self.num_params * self.nbits))
 
     def decode_individuals(self):
