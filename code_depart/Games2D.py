@@ -2,10 +2,12 @@ from pygame.locals import *
 import pygame
 import matplotlib.pyplot as plt
 from Player import *
+from Player_AI import *
 from Maze import *
 from Constants import *
 from Path_Finder import *
 from UnlockDoor import UnlockDoor
+import math
 
 class App:
     windowWidth = WIDTH
@@ -24,10 +26,12 @@ class App:
         self.timer = 0.0
         self.player = Player()
         self.maze = Maze(mazefile)
-
-        self.pathfind = Path_Finder(mazefile)
-        self.chemin = Path_Finder.find_path(self.pathfind)
-        print(self.chemin)
+        self.pathfind = Path_Finder(mazefile)               # Initialise Path_Finder
+        self.chemin = Path_Finder.find_path(self.pathfind)  # Retourne les nodes à atteindre
+        if self.chemin == None:
+            exit()
+        self.ai_player = Player_AI(self.chemin[0],self.chemin)
+        
 
     def on_init(self):
         pygame.init()
@@ -210,7 +214,13 @@ class App:
 
             keys = pygame.key.get_pressed()
             self.on_keyboard_input(keys)
-            # self.on_AI_input(instruction)
+            self.ai_player.current_node = (math.floor((self.player.x)/self.maze.tile_size_x), math.floor(self.player.y/self.maze.tile_size_y))
+            instruction = Player_AI.get_instruction(self.ai_player)
+            if(len(self.maze.look_at_door(self.player, self._display_surf)) > 0):
+                key = UnlockDoor.unlockDoor(self.maze.look_at_door(self.player, self._display_surf)[0])
+                self.maze.unlock_door(key)
+            #print(str(current_node))
+            self.on_AI_input(instruction)
 
             if self.on_coin_collision():
                 self.score += 1
