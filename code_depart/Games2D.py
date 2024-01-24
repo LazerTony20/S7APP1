@@ -24,10 +24,12 @@ class App:
         self.timer = 0.0
         self.player = Player()
         self.maze = Maze(mazefile)
-
-        self.pathfind = Path_Finder(mazefile)
-        self.chemin = Path_Finder.find_path(self.pathfind)
-        print(self.chemin)
+        self.pathfind = Path_Finder(mazefile)               # Initialise Path_Finder
+        self.chemin = Path_Finder.find_path(self.pathfind)  # Retourne les nodes à atteindre
+        if self.chemin == None:
+            exit()
+        self.ai_player = Player_AI(self.chemin[0],self.chemin)
+        
 
     def on_init(self):
         pygame.init()

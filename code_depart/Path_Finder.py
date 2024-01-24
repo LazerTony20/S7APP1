@@ -56,4 +56,5 @@ class Path_Finder:
                         new_cost = current_cost + 1 + self.fct_heuristique(adjacent, self.position_fin[0])
                         if not any(item[1] == adjacent for item in open_set) or new_cost < current_cost:
                             open_set.add((new_cost, adjacent, current_path + (current_pos,)))        
+        print("No Path Found")
         return None
