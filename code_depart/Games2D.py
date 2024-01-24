@@ -27,11 +27,6 @@ class App:
         self.pathfind = Path_Finder(mazefile)
         self.chemin = Path_Finder.find_path(self.pathfind)
         print(self.chemin)
-        plt.plot(self.chemin,color='green', linestyle='dashed', linewidth = 3,
-         marker='o', markerfacecolor='blue', markersize=12)
-        plt.ylim(16,0)
-        plt.xlim(0,24)
-        plt.show()
 
     def on_init(self):
         pygame.init()

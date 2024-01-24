@@ -13,8 +13,7 @@ class Maze:
         with open(mazefile) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             for row in csv_reader:
-                self.maze.append(row)
-            
+                self.maze.append(row)           
         self.N = len(self.maze)
         self.M = len(self.maze[0])
         self.wallList = []
