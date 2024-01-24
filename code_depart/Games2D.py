@@ -4,6 +4,7 @@ import pygame
 from Player import *
 from Maze import *
 from Constants import *
+from UnlockDoor import UnlockDoor
 
 
 class App:
@@ -65,15 +66,16 @@ class App:
             # you need to win all four rounds to beat it
 
         if keys[K_SPACE]:
-            print(self.maze.look_at_door(self.player, self._display_surf))
+            if(len(self.maze.look_at_door(self.player, self._display_surf)) > 0):
+                key = UnlockDoor.unlockDoor(self.maze.look_at_door(self.player, self._display_surf)[0])
+                self.maze.unlock_door(key)
             # returns the state of the doors you can currently see
             # you need to unlock it by providing the correct key
 
         if keys[K_u]:
             self.maze.unlock_door('first')
             # returns true if the door is unlocked, false if the answer is incorrect and the door remains locked
-            # if the door is unlocked you can pass through it (no visible change... yet)
-
+            # if the door is unlocked you can pass through it (no visible change... yet)            
         if (keys[K_ESCAPE]):
             self._running = False
 
