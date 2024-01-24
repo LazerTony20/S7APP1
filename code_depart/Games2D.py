@@ -1,11 +1,11 @@
 from pygame.locals import *
 import pygame
-
+import matplotlib.pyplot as plt
 from Player import *
 from Maze import *
 from Constants import *
+from Path_Finder import *
 from UnlockDoor import UnlockDoor
-
 
 class App:
     windowWidth = WIDTH
@@ -24,6 +24,10 @@ class App:
         self.timer = 0.0
         self.player = Player()
         self.maze = Maze(mazefile)
+
+        self.pathfind = Path_Finder(mazefile)
+        self.chemin = Path_Finder.find_path(self.pathfind)
+        print(self.chemin)
 
     def on_init(self):
         pygame.init()
@@ -203,9 +207,11 @@ class App:
                 if event.type == pygame.USEREVENT:
                     self.timer += 0.01
             pygame.event.pump()
+
             keys = pygame.key.get_pressed()
             self.on_keyboard_input(keys)
             # self.on_AI_input(instruction)
+
             if self.on_coin_collision():
                 self.score += 1
             if self.on_treasure_collision():

@@ -4,12 +4,13 @@
 
 from Games2D import *
 
+
 if __name__ == '__main__':
     # Niveau 0 - sans obstacle - 'assets/Mazes/mazeMedium_0'
     # Niveau 1 - avec obstacles - 'assets/Mazes/mazeMedium_1'
     # Niveau 2 - avec obstacles, portes et un ennemi - 'assets/Mazes/mazeMedium_2'
     # Niveau 2 - avec obstacles, portes et plusieurs ennemis - 'assets/Mazes/mazeMedium_2'
-
-    theAPP = App('assets/Mazes/mazeMedium_0')
+    ChosenMaze = "assets/Mazes/mazeMedium_0"
+    theAPP = App(ChosenMaze)
     theAPP.on_execute()
 
