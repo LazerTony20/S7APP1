@@ -14,6 +14,7 @@ class Maze:
             csv_reader = csv.reader(csv_file, delimiter=',')
             for row in csv_reader:
                 self.maze.append(row)
+            
         self.N = len(self.maze)
         self.M = len(self.maze[0])
         self.wallList = []
@@ -45,14 +46,17 @@ class Maze:
         self._obstacle_surf = pygame.transform.scale(self._obstacle_surf, (ITEM_SIZE*self.tile_size_x, ITEM_SIZE*self.tile_size_y))
         self._door_surf = pygame.image.load("assets/Images/door.png")
         self._door_surf = pygame.transform.scale(self._door_surf, (self.tile_size_x, self.tile_size_y))
+        #print("a")
 
     def random_position(self, i, j):
         x = (j + random.uniform(0, 1 - ITEM_SIZE)) * self.tile_size_x
         y = (i + random.uniform(0, 1 - ITEM_SIZE)) * self.tile_size_y
+        #print("b")
         return x, y
 
     def make_maze_wall_list(self):
         # Start tile wall
+        #print("c")
         for i in range(len(self.maze)):
             for j in range(len(self.maze[i])):
                 if self.maze[i][j] == '1':
