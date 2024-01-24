@@ -1,6 +1,8 @@
 # Simple interactive dungeon crawler
 # This code was written for the AI courses in computer engineering at Université de Sherbrooke
 # Author : Audrey Corbeil Therrien
+from os import environ
+environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1' #REMOVE HELLO PROMPT
 
 from Games2D import *
 
