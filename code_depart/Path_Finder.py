@@ -51,7 +51,7 @@ class Path_Finder:
             closed_set.add(current_pos)
             adjacents = [(current_pos[0] + j, current_pos[1] + i) for i, j in [(-1, 0), (1, 0), (0, -1), (0, 1)]]
             for adjacent in adjacents:
-                if self.validation_deplacement(adjacent) and self.labyrinthe[adjacent[1]][adjacent[0]] in ['0', 'C', 'T', 'O', 'E']:
+                if self.validation_deplacement(adjacent) and self.labyrinthe[adjacent[1]][adjacent[0]] in ['0', 'C', 'T', 'O', 'E','D']:
                     if adjacent not in closed_set:
                         new_cost = current_cost + 1 + self.fct_heuristique(adjacent, self.position_fin[0])
                         if not any(item[1] == adjacent for item in open_set) or new_cost < current_cost:
