@@ -7,6 +7,7 @@ from Maze import *
 from Constants import *
 from Path_Finder import *
 from UnlockDoor import UnlockDoor
+from KillMonster import KillMonster
 import math
 
 class App:
@@ -24,6 +25,7 @@ class App:
         self.level = 0
         self.score = 0
         self.timer = 0.0
+        self.KillMonster = KillMonster(1000,0.02,50,0.9,0.2) #best config a date
         self.player = Player()
         self.maze = Maze(mazefile)
         self.pathfind = Path_Finder(mazefile)               # Initialise Path_Finder
@@ -62,7 +64,13 @@ class App:
 
         # Utility functions for AI
         if keys[K_p]:
-            self.maze.make_perception_list(self.player, self._display_surf)
+            perception = self.maze.make_perception_list(self.player, self._display_surf)
+            if perception[3] != []:
+                print("Monster detected!")
+                self.KillMonster.setMonster(perception[3][0])
+                best = self.KillMonster.genetic_algorithm()
+                self.player.set_attributes(best)
+                
             # returns a list of 5 lists of pygame.rect inside the perception radius
             # the 4 lists are [wall_list, obstacle_list, item_list, monster_list, door_list]
             # item_list includes coins and treasure
