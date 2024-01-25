@@ -91,9 +91,9 @@ class KillMonster:
     #             return self.population[i]
         
     # Effectuer la reproduction
-    def crossover(self, parent1, parent2):
+    def crossover(self, parent1, parent2,meilleur):
         if(self.crossover_rate < random.uniform(0, 1)):
-            return random.choice([parent1,parent2])
+            return meilleur
         else:
             crossover_point = random.randint(1, len(parent1) - 2)
             child = parent1[:crossover_point] + parent2[crossover_point:]
@@ -102,13 +102,14 @@ class KillMonster:
     # Appliquer une mutation à un individu
     def mutate(self, individual):
         for gene in individual:
-            if self.mutation_rate < random.uniform(0, 1):
+            # 
+            if self.mutation_rate > random.uniform(0, 1):
                 i = random.randint(0, len(gene) - 1)
                 gene = gene[:i] + ('1' if gene[i] == '0' else '0') + gene[i + 1:]
         return individual
     
-    def elitism(self):
-        elites_indices = sorted(range(len(self.scores)), key=lambda i: self.scores[i], reverse=True)[:int(self.elite_ratio * self.population_size)]
+    def elitism(self,ratio):
+        elites_indices = sorted(range(len(self.scores)), key=lambda i: self.scores[i], reverse=True)[:int(ratio * self.population_size)]
         elites = [self.population[i] for i in elites_indices]
         return elites
     
@@ -116,19 +117,35 @@ class KillMonster:
     def genetic_algorithm(self):
         self.current_gen = 0
         self.generate_population(self.population_size)
+        self.evaluate_population(self.population)
         while(True):
-            self.evaluate_population(self.population)
-            new_population = self.elitism()
-            remaining_size = int(self.population_size * (1 - self.elite_ratio))
-            if self.current_gen % self.generations == 0:
+            if self.current_gen % 500 == 0 and self.current_gen != 0:
+                # full genocide augmentation de la mutation rate
+                self.mutation_rate += 0.01
+                self.generate_population(self.population_size)
+                new_population = self.population
+            elif self.current_gen % 100 == 0 and self.current_gen != 0:
+                #genocide keep 1 percent of the best
+                new_population = self.elitism(0.01)
+                remaining_size = int(self.population_size * (1 - 0.01))
+                self.generate_population(remaining_size)
+                new_population.extend(self.population)  
+            elif self.current_gen % self.generations == 0 and self.current_gen != 0:
+                new_population = self.elitism(self.elite_ratio)
+                remaining_size = int(self.population_size * (1 - self.elite_ratio))
                 self.generate_population(remaining_size)
                 new_population.extend(self.population)
             else:
+                new_population = self.elitism(self.elite_ratio)
+                remaining_size = int(self.population_size * (1 - self.elite_ratio))
                 for _ in range(remaining_size // 2):
                     parent1 = self.selection()
+                    valueParent1 = self.scores[self.population.index(parent1)]
                     parent2 = self.selection()
-                    child1 = self.crossover(parent1, parent2)
-                    child2 = self.crossover(parent2, parent1)
+                    valueParent2 = self.scores[self.population.index(parent2)]
+                    meilleur = parent1 if valueParent1 > valueParent2 else parent2
+                    child1 = self.crossover(parent1, parent2,meilleur)
+                    child2 = self.crossover(parent2, parent1,meilleur)
                     child1 = self.mutate(child1)
                     child2 = self.mutate(child2)
                     new_population.extend([child1, child2])
@@ -159,8 +176,6 @@ class KillMonster:
         return [decode_population(gene) for gene in self.bestIndividual]
     
 def encode_population(value, bits=11):
-        if not isinstance(value, int) or not isinstance(bits, int) or bits <= 0:
-            raise ValueError("La valeur doit être un entier positif et le nombre de bits doit être un entier positif.")
         value = max(-1000, min(1000, value))
         if value < 0:
             signe = '1'
@@ -173,8 +188,6 @@ def encode_population(value, bits=11):
         return bin_value
     # Decoder Population
 def decode_population(bin):
-    if not isinstance(bin, str) or len(bin) == 0:
-        raise ValueError("La représentation binaire doit être une chaîne de caractères non vide.")
     signe = bin[0]
     value = bin[1:]
     value = int(value, base=2)
