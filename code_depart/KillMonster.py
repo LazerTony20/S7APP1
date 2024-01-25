@@ -68,7 +68,6 @@ class KillMonster:
     
     # Sélectionner des individus pour la reproduction
     def selection(self):
-        
         selected_indices = random.sample(range(len(self.population)), 1)
         selected_individuals = [self.population[i] for i in selected_indices]
         selected_scores = [self.scores[i] for i in selected_indices]
@@ -92,9 +91,9 @@ class KillMonster:
     #             return self.population[i]
         
     # Effectuer la reproduction
-    def crossover(self, parent1, parent2):
+    def crossover(self, parent1, parent2,meilleur):
         if(self.crossover_rate < random.uniform(0, 1)):
-            return random.choice([parent1, parent2])
+            return meilleur
         else:
             crossover_point = random.randint(1, len(parent1) - 2)
             child = parent1[:crossover_point] + parent2[crossover_point:]
@@ -125,11 +124,14 @@ class KillMonster:
                 self.generate_population(remaining_size)
                 new_population.extend(self.population)
             else:
-                for _ in range(self.population_size // 2):
+                for _ in range(remaining_size // 2):
                     parent1 = self.selection()
+                    parent1Value = self.scores[self.population.index(parent1)]
                     parent2 = self.selection()
-                    child1 = self.crossover(parent1, parent2)
-                    child2 = self.crossover(parent2, parent1)
+                    parent2Value = self.scores[self.population.index(parent2)]
+                    meilleur = parent1 if parent1Value > parent2Value else parent2
+                    child1 = self.crossover(parent1, parent2,meilleur)
+                    child2 = self.crossover(parent2, parent1,meilleur)
                     child1 = self.mutate(child1)
                     child2 = self.mutate(child2)
                     new_population.extend([child1, child2])

@@ -24,7 +24,7 @@ class App:
         self.level = 0
         self.score = 0
         self.timer = 0.0
-        self.KillMonster = KillMonster(1000,0.02,40,0.5,0.1) #best config a date
+        self.KillMonster = KillMonster(1000,0.02,50,0.6,0.1) #best config a date
         self.player = Player()
         self.maze = Maze(mazefile)
         self.pathfind = Path_Finder(mazefile)
