@@ -21,6 +21,7 @@ class KillMonster:
         self.scores = []
         self.kill = []
         self.Player = Player()
+        
     def __init__(self, pop_size=2, mutation_rate=0.01, generations=10,crossover_rate=0.8, elite_ratio=0.1, maze=None):
         self.population_size = pop_size
         self.mutation_rate = mutation_rate
