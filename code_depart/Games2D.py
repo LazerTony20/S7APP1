@@ -7,7 +7,7 @@ from Maze import *
 from Constants import *
 from Path_Finder import *
 from UnlockDoor import UnlockDoor
-from KillMonster import KillMonster
+from KillMonster import *
 import math
 
 class App:
@@ -25,6 +25,7 @@ class App:
         self.level = 0
         self.score = 0
         self.timer = 0.0
+        self.ready_to_fight = False
         self.KillMonster = KillMonster(1000,0.02,50,0.9,0.2) #best config a date
         self.player = Player()
         self.maze = Maze(mazefile)
@@ -224,10 +225,22 @@ class App:
             self.on_keyboard_input(keys)
             self.ai_player.current_node = (math.floor((self.player.x)/self.maze.tile_size_x), math.floor(self.player.y/self.maze.tile_size_y))
             instruction = Player_AI.get_instruction(self.ai_player)
+            # Check for doors
             if(len(self.maze.look_at_door(self.player, self._display_surf)) > 0):
                 key = UnlockDoor.unlockDoor(self.maze.look_at_door(self.player, self._display_surf)[0])
                 self.maze.unlock_door(key)
             #print(str(current_node))
+            
+            if self.ready_to_fight == False:
+                perception = self.maze.make_perception_list(self.player, self._display_surf)
+
+                if perception[3] != []:
+                    print("Monster detected!")
+                    self.KillMonster.setMonster(perception[3][0])
+                    best = self.KillMonster.genetic_algorithm()
+                    self.player.set_attributes(best)
+                    self.ready_to_fight = True
+
             self.on_AI_input(instruction)
 
             if self.on_coin_collision():
@@ -236,6 +249,7 @@ class App:
                 self.score += 10
             monster = self.on_monster_collision()
             if monster:
+                self.ready_to_fight = False
                 if monster.fight(self.player):
                     self.maze.monsterList.remove(monster)
                     self.score += 50
