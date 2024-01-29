@@ -19,7 +19,7 @@ regle5Cristaux(_,_,Position) :- Position = 'first'.
 regle6Cristaux(Array,Metal,Position) :- Metal == 'bronze', getColor(Array,'yellow',Count,_),Count =:= 0, Position = 'third'.
 regle6Cristaux(Array,_,Position) :- getColor(Array,'yellow',CountYellow,_), CountYellow =:= 1, getColor(Array, 'white', CountWhite, _), CountWhite > 1, Position = 'fourth'.
 regle6Cristaux(Array,_,Position) :- getColor(Array,'red',Count,_), Count =:= 0, Position = 'sixth'.
-regle6Cristaux(_,_,Position) :- Position = 'forth'.
+regle6Cristaux(_,_,Position) :- Position = 'fourth'.
 
 getColor(Array,TargetColor, Count,Last) :- getColorSub(Array, TargetColor, 1, 0, 0, Count, Last).
 getColorSub([], _, _, Count, Last, Count, Last).

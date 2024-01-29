@@ -1,0 +1,70 @@
+[
+    {
+        "entree": ["silver", "blue", "blue", "yellow", "", "", ""],
+        "sortie": "second"
+    },
+    {
+        "entree": ["silver", "red", "blue", "white", "", "", ""],
+        "sortie": "third"
+    },
+    {
+        "entree":["silver", "blue", "red", "blue", "", "", ""],
+        "sortie": "third"
+    },
+    {
+        "entree":["silver", "blue", "yellow", "red", "", "", ""],
+        "sortie": "first"
+    },
+    {
+        "entree":["silver", "red", "yellow", "red", "yellow", "", ""],
+        "sortie": "third"
+    },
+    {
+        "entree":["gold", "yellow", "yellow", "blue", "yellow", "", ""],
+        "sortie": "first"
+    },
+    {
+        "entree":["gold", "yellow", "yellow", "blue", "black", "", ""],
+        "sortie": "first"
+    },
+    {
+        "entree":["gold", "yellow", "yellow", "black", "black", "", ""],
+        "sortie": "fourth"
+    },
+    {
+        "entree":["gold", "yellow", "red", "black", "black", "", ""],
+        "sortie": "second"
+    },
+    {
+        "entree":["gold", "yellow", "red", "black", "black", "black", ""],
+        "sortie": "fourth" 
+    },
+    {
+        "entree":["silver", "red", "yellow", "black", "black", "yellow", ""],
+        "sortie": "first" 
+    },
+    {
+        "entree":["silver", "red", "blue", "blue", "blue", "yellow", ""],
+        "sortie": "second" 
+    },
+    {
+        "entree":["silver", "red", "blue", "black", "blue", "yellow", ""],
+        "sortie": "first" 
+    },
+    {
+        "entree":["bronze", "red", "blue", "black", "blue", "black", "black"],
+        "sortie": "third" 
+    },
+    {
+        "entree":["bronze", "red", "yellow", "black", "white", "white", "black"],
+        "sortie": "fourth" 
+    },
+    {
+        "entree":["bronze", "black", "yellow", "black", "black", "white", "black"],
+        "sortie": "sixth" 
+    },
+    {
+        "entree":["bronze", "black", "yellow", "red", "black", "white", "black"],
+        "sortie": "fourth" 
+    }
+]

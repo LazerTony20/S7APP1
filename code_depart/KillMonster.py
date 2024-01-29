@@ -156,14 +156,14 @@ class KillMonster:
             self.bestKill = max(self.kill, key=int)
             self.bestFitness = max(self.scores, key=float)
             self.bestIndividual = self.population[self.scores.index(self.bestFitness)]
-            if(self.current_gen % 10 == 0):
-                # self.mutation_rate += 0.01
-                print("Generation: ", self.current_gen)
-                print("Best fitness: ", self.bestFitness)
-                print("Best Individual: ", [decode_population(gene) for gene in self.bestIndividual])
-                print("Best kill: ", self.bestKill)
-                print("Max kill: ", self.maxKill)
-                print("======================================================")
+            # if(self.current_gen % 10 == 0):
+            #     # self.mutation_rate += 0.01
+            #     print("Generation: ", self.current_gen)
+            #     print("Best fitness: ", self.bestFitness)
+            #     print("Best Individual: ", [decode_population(gene) for gene in self.bestIndividual])
+            #     print("Best kill: ", self.bestKill)
+            #     print("Max kill: ", self.maxKill)
+            #     print("======================================================")
             if self.bestKill == self.maxKill:
                 self.bestIndividual = self.population[self.kill.index(self.bestKill)]
                 self.bestFitness = self.scores[self.kill.index(self.bestKill)]
@@ -173,8 +173,12 @@ class KillMonster:
                 print("Best fitness: ", self.bestFitness)
                 print("Best Individual: ", [decode_population(gene) for gene in self.bestIndividual])
                 print("======================================================")
-                return [decode_population(gene) for gene in self.bestIndividual]
-        return [decode_population(gene) for gene in self.bestIndividual]
+                return {
+                    "player":[decode_population(gene) for gene in self.bestIndividual],
+                    "fitness":self.bestFitness,
+                    "kill":self.bestKill,
+                    "generation":self.current_gen,
+                }
     
 def encode_population(value, bits=11):
         value = max(-1000, min(1000, value))

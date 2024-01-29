@@ -70,7 +70,7 @@ class App:
                 print("Monster detected!")
                 self.KillMonster.setMonster(perception[3][0])
                 best = self.KillMonster.genetic_algorithm()
-                self.player.set_attributes(best)
+                self.player.set_attributes(best["player"])
                 
             # returns a list of 5 lists of pygame.rect inside the perception radius
             # the 4 lists are [wall_list, obstacle_list, item_list, monster_list, door_list]
@@ -238,7 +238,7 @@ class App:
                     print("Monster detected!")
                     self.KillMonster.setMonster(perception[3][0])
                     best = self.KillMonster.genetic_algorithm()
-                    self.player.set_attributes(best)
+                    self.player.set_attributes(best["player"])
                     self.ready_to_fight = True
 
             self.on_AI_input(instruction)
