@@ -32,8 +32,13 @@ def test():
     maze.make_maze_item_lists()    
     killMonster = KillMonster(1000,0.02,50,0.9,0.2,maze) #best config a date
     best = killMonster.genetic_algorithm()
-    if(best["kill"] < 4):
+    print(best)
+    if(best["kill"] < 4 & best["generation"] < 3000):
         print("Erreur dans le test du monstre: "+ str(best))
+        print("Nombre de monstres tués attendu: 4")
+        print("Nombre de monstres tués obtenu: "+str(best["kill"]))
+        print("Nombre de générations maximum attendu: 3000")
+        print("Nombre de générations obtenu: "+str(best["generation"]))
         return False
     return True
 
