@@ -17,6 +17,6 @@ if __name__ == '__main__':
     # killMonster = KillMonster(1000,0.01,20,0.99,0.3,maze) #best config a date
     # best = killMonster.genetic_algorithm()
     # print(best)
-    ChosenMaze = "assets/Mazes/mazeMedium_3"
+    ChosenMaze = "assets/Mazes/MazeLarge_3"
     theAPP = App(ChosenMaze)
     theAPP.on_execute()
