@@ -19,37 +19,37 @@ class Dodge:
         self.position = current_node
         self.maze = Maze(mazefile)
         self.dodge = None
+        self.dodge = self.initiate_fuzzy_logic_controller()
         
     def initiate_fuzzy_logic_controller(self):
 
         controller_rules = []
         #Input du contrôleur
-        obstacle_position = control.Antecedent(np.arange(-10, 10, 1), 'obstacle_position')
-        player_position = control.Antecedent(np.arange(-10, 10, 1), 'player_position')
-        distance = control.Antecedent(np.arange(0, 11, 1), 'distance')
+        obstacle_position = control.Antecedent(np.linspace(-10, 10, 1000), 'obstacle_position')
+        player_position = control.Antecedent(np.linspace(-10, 10, 1000), 'player_position')
+        distance = control.Antecedent(np.linspace(0, 10, 1000), 'distance')
         #Output du contrôleur
-        to_go_position = control.Consequent(np.arange(-1,1,1), 'to_direction')
+        to_go_position = control.Consequent(np.linspace(-1,1,1000), 'to_direction')
 
         #Règles pour notre controlleur de logique floue
 
-        obstacle_position['left'] = sk.trimf(obstacle_position.universe, [-10, -10, -6])
-        obstacle_position['left-center'] = sk.trimf(obstacle_position.universe, [-6, -2, 1])
-        obstacle_position['right-center'] = sk.trimf(obstacle_position.universe, [-1, 2, 6])
-        obstacle_position['right'] = sk.trimf(obstacle_position.universe,[ 6, 10, 10])
-        
-        player_position['left'] = sk.trimf(player_position.universe, [-10, -10, -6])
-        player_position['left-center'] = sk.trimf(player_position.universe, [-6, -2, 1])
-        player_position['right-center'] = sk.trimf(player_position.universe, [-1, 2, 6])
-        player_position['right'] = sk.trimf(player_position.universe, [6, 10, 10])
+        obstacle_position['left'] = sk.trapmf(obstacle_position.universe, [-10, -10, -5, 0])
+        obstacle_position['left-center'] = sk.trapmf(obstacle_position.universe, [-5, -2, 0, 0])
+        obstacle_position['right-center'] = sk.trapmf(obstacle_position.universe, [0, 0, 2, 5])
+        obstacle_position['right'] = sk.trapmf(obstacle_position.universe,[0, 5, 10, 10])
+
+        player_position['left'] = sk.trapmf(player_position.universe, [-10, -10, -5, 0])
+        player_position['left-center'] = sk.trapmf(player_position.universe, [-5, -2, 0, 0])
+        player_position['right-center'] = sk.trapmf(player_position.universe, [0, 0, 2, 5])
+        player_position['right'] = sk.trapmf(player_position.universe, [0, 5, 10, 10])
 
         distance['close'] = sk.trimf(distance.universe, [0, 0, 5])
         distance['mid'] = sk.trimf(distance.universe, [0, 5, 10])
         distance['far'] = sk.trimf(distance.universe, [5, 10, 10])
 
-        to_go_position['left'] = sk.trimf(to_go_position.universe, [-1, -1, 0.5])
-        to_go_position['straight'] = sk.trimf(to_go_position.universe, [-0.5, 0, 0.5])
-        to_go_position['right'] = sk.trimf(to_go_position.universe, [-0.5, 1, 1])
-
+        to_go_position['left'] = sk.trapmf(to_go_position.universe, [-1, -1, -0.5, 0])
+        to_go_position['straight'] = sk.trimf(to_go_position.universe, [-1, 0, 1])
+        to_go_position['right'] = sk.trapmf(to_go_position.universe, [0, 0.5, 1, 1])
 
         # Rule for going straight when far or mid distance
         controller_rules.append(control.Rule(distance['far'], to_go_position['straight']))
@@ -101,6 +101,10 @@ class Dodge:
 
         self.dodge_controller = control.ControlSystem(controller_rules)
         self.dodge = control.ControlSystemSimulation(self.dodge_controller)
+        
+        # for var in self.dodge.ctrl.fuzzy_variables:
+        #     var.view()
+        # plt.show()
       
     def to_dodge(self, obstacle, player, instruction):
         if self.dodge is None:
@@ -133,9 +137,9 @@ class Dodge:
         if instruction == "UP":
             self.dodge.input['distance'] = ((player.top - obstacle.bottom))
         elif instruction == "RIGHT":
-            self.dodge.input['distance'] = ((player.left - obstacle.right))
+            self.dodge.input['distance'] = ((player.right - obstacle.left))
         elif instruction == "DOWN":
-            self.dodge.input['distance'] = ((player.top - obstacle.bottom))
+            self.dodge.input['distance'] = ((player.bottom - obstacle.top))
         elif instruction == "LEFT":
             self.dodge.input['distance'] = ((player.left - obstacle.right))
             
@@ -148,19 +152,21 @@ class Dodge:
     
     def decode_instruction(self,new,instruction):
         to_go_instruction = "DOWN"
-        if new <= -0.1:
+        if new < 0:
             if instruction == "UP" or instruction == "DOWN":
                 to_go_instruction = "LEFT"
             elif instruction == "RIGHT":
                 to_go_instruction = "UP"
-            else:
+            elif instruction == "LEFT":
                 to_go_instruction = "DOWN"
-        elif new >= 0.1:
+        elif new > 0:
             if instruction == "UP" or instruction == "DOWN":
-                to_go_instruction ="RIGHT"
+                to_go_instruction = "RIGHT"
             elif instruction == "RIGHT":
                 to_go_instruction = "DOWN"
             elif instruction == "LEFT":
                 to_go_instruction = "UP"
+        else:
+            to_go_instruction = instruction
         return to_go_instruction
 

@@ -232,7 +232,10 @@ class App:
             self.on_keyboard_input(keys)
             self.ai_player.maze = self.map
             self.ai_player.player_size = self.player.get_rect()
-            self.ai_player.current_node = (math.floor((self.player.x)/self.maze.tile_size_x), math.floor(self.player.y/self.maze.tile_size_y))
+            if (math.floor((self.player.x)/self.maze.tile_size_x), math.floor(self.player.y/self.maze.tile_size_y)) == (math.floor((self.player.x + 21)/self.maze.tile_size_x), math.floor((self.player.y + 21)/self.maze.tile_size_y)):
+                self.ai_player.current_node = (math.floor((self.player.x)/self.maze.tile_size_x), math.floor(self.player.y/self.maze.tile_size_y))
+                # self.pathfind.position_debut = [self.ai_player.current_node]
+                # self.chemin = Path_Finder.find_path(self.pathfind)
             self.ai_player.perception = self.maze.make_perception_list(self.player, self._display_surf)
             instruction = Player_AI.get_instruction(self.ai_player)
             self.ai_player.lastPosition = self.player.get_rect().center

@@ -25,21 +25,27 @@ class Player_AI:
         self.lastPosition = self.player.get_rect().center
         self.stuck = 0
         self.counter = 0
+        self.obstacle = None
         self.fuzz_instance = Dodge(self.player, self.current_node, self.maze)
         
-    def obstacleDansLeChemin(self, obstacle, player, instruction):
-        if instruction == "UP" and obstacle.centery < player.centery:
-            if player.left < obstacle.right and player.right > obstacle.left:
-                return True
-        elif instruction == "DOWN" and obstacle.centery > player.centery:
-            if player.left < obstacle.right and player.right > obstacle.left:
-                return True
-        elif instruction == "RIGHT" and obstacle.centerx > player.centerx:
-            if player.bottom > obstacle.top and player.top < obstacle.bottom:
-                return True
-        elif instruction == "LEFT" and obstacle.centerx < player.centerx:
-            if player.bottom > obstacle.top and player.top < obstacle.bottom:
-                return True
+    def obstacleDansLeChemin(self, obstacles, player, instruction):
+        for obstacle in obstacles:
+            if instruction == "UP" and obstacle.centery < player.centery:
+                if player.left < obstacle.right and player.right > obstacle.left:
+                    self.obstacle = obstacle
+                    return True
+            elif instruction == "DOWN" and obstacle.centery > player.centery:
+                if player.left < obstacle.right and player.right > obstacle.left:
+                    self.obstacle = obstacle
+                    return True
+            elif instruction == "RIGHT" and obstacle.centerx > player.centerx:
+                if player.bottom > obstacle.top and player.top < obstacle.bottom:
+                    self.obstacle = obstacle
+                    return True
+            elif instruction == "LEFT" and obstacle.centerx < player.centerx:
+                if player.bottom > obstacle.top and player.top < obstacle.bottom:
+                    self.obstacle = obstacle
+                    return True
 
         return False
     def get_instruction(self):
@@ -53,14 +59,17 @@ class Player_AI:
             self.instruction = "DOWN"
         elif self.current_node[1] > self.remaining_nodes[0][1]:
             self.instruction = "UP"
-        if(self.perception[1] != []):
-            if self.obstacleDansLeChemin(self.perception[1][0], self.player_size, self.instruction) == True:
-                self.instruction = self.fuzz_instance.to_dodge(self.perception[1][0],self.player_size, self.instruction)
+        print(self.perception[1])
+        print(len(self.perception[1]))
+        if(len(self.perception[1]) != 0):
+            if self.obstacleDansLeChemin(self.perception[1], self.player_size, self.instruction) == True:
+                print("obstacle dans le chemin")
+                self.instruction = self.fuzz_instance.to_dodge(self.obstacle,self.player_size, self.instruction)
         if self.player.get_rect().center == self.lastPosition:
             self.stuck += 1
             if self.stuck >= 5:
                 self.counter += 1
-        print(self.instruction)
+        print("origine",self.instruction)
         if self.counter > 0 and self.counter <= 10:
             self.counter += 1
             match self.instruction:
@@ -75,9 +84,10 @@ class Player_AI:
                     case "BLOCKED":
                         self.instruction = "BLOCKED"
             self.stuck = 0
+            print("inversé",self.instruction)
         else:
             self.counter = 0
-        print(self.instruction)
+        print("final",self.instruction)
         match self.instruction:
             case 'RIGHT':
                 self.instruction = "RIGHT"
