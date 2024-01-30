@@ -27,7 +27,7 @@ class App:
         self.score = 0
         self.timer = 0.0
         self.ready_to_fight = False
-        self.KillMonster = KillMonster(1000,0.02,50,0.9,0.2) #best config a date
+        self.KillMonster = KillMonster(1000,0.02,30,0.9,0.2) 
         self.player = Player()
         self.maze = Maze(mazefile)
         self.perception = None
@@ -112,6 +112,10 @@ class App:
 
         if instruction == 'DOWN':
             self.move_player_down()
+        if instruction == "BLOCKED":
+            print("blocked")
+            self._running = False
+        
 
     def on_collision(self):
         return self.on_wall_collision() or self.on_obstacle_collision() or self.on_door_collision()
@@ -227,10 +231,11 @@ class App:
             keys = pygame.key.get_pressed()
             self.on_keyboard_input(keys)
             self.ai_player.maze = self.map
-            self.ai_player.player_size = self.player.get_size()
+            self.ai_player.player_size = self.player.get_rect()
             self.ai_player.current_node = (math.floor((self.player.x)/self.maze.tile_size_x), math.floor(self.player.y/self.maze.tile_size_y))
             self.ai_player.perception = self.maze.make_perception_list(self.player, self._display_surf)
             instruction = Player_AI.get_instruction(self.ai_player)
+            self.ai_player.lastPosition = self.player.get_rect().center
             # Check for doors
             if(len(self.maze.look_at_door(self.player, self._display_surf)) > 0):
                 key = UnlockDoor.unlockDoor(self.maze.look_at_door(self.player, self._display_surf)[0])
@@ -238,10 +243,9 @@ class App:
             #print(str(current_node))
             
             if self.ready_to_fight == False:
-                perception = self.maze.make_perception_list(self.player, self._display_surf)
-                if perception[3] != []:
+                if self.ai_player.perception[3] != []:
                     print("Monster detected!")
-                    self.KillMonster.setMonster(perception[3][0])
+                    self.KillMonster.setMonster(self.ai_player.perception[3][0])
                     best = self.KillMonster.genetic_algorithm()
                     self.player.set_attributes(best["player"])
                     self.ready_to_fight = True

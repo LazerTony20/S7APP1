@@ -1,6 +1,6 @@
 import pygame
 import csv
-#from Monster import *
+from Monster import *
 from Constants import *
 from Door import *
 
@@ -83,7 +83,7 @@ class Maze:
                     self.obstacleList.append(new_obstacle)
                 elif self.maze[i][j] == MONSTER:
                     new_monster = pygame.Rect((j * self.tile_size_x, i * self.tile_size_y), (self.tile_size_x, self.tile_size_y))
-                    #self.monsterList.append(Monster(new_monster))
+                    self.monsterList.append(Monster(new_monster))
                 elif self.maze[i][j] == EXIT:
                     self.exit = pygame.Rect((j * self.tile_size_x, i * self.tile_size_y), (self.tile_size_x, self.tile_size_y))
                 elif self.maze[i][j] == DOOR:
