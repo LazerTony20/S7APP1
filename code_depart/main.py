@@ -5,6 +5,7 @@ from os import environ
 environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1' #REMOVE HELLO PROMPT
 
 from Games2D import *
+from Player_AI import *
 
 if __name__ == '__main__':
     # Niveau 0 - sans obstacle - 'assets/Mazes/mazeMedium_0'
@@ -17,6 +18,6 @@ if __name__ == '__main__':
     # killMonster = KillMonster(1000,0.02,50,0.9,0.2,maze) #best config a date
     # best = killMonster.genetic_algorithm()
     # print(best)
-    ChosenMaze = "assets/Mazes/MazeLarge_3"
+    ChosenMaze = "assets/Mazes/mazeMedium_1"
     theAPP = App(ChosenMaze)
     theAPP.on_execute()

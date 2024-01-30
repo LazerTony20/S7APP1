@@ -16,6 +16,7 @@ class App:
     player = 0
 
     def __init__(self, mazefile):
+        self.map = mazefile
         self._running = True
         self._win = False
         self._dead = False
@@ -29,15 +30,17 @@ class App:
         self.KillMonster = KillMonster(1000,0.02,50,0.9,0.2) #best config a date
         self.player = Player()
         self.maze = Maze(mazefile)
+        self.perception = None
         self.pathfind = Path_Finder(mazefile)               # Initialise Path_Finder
         self.chemin = Path_Finder.find_path(self.pathfind)  # Retourne les nodes à atteindre
         if self.chemin == None:
             exit()
-        self.ai_player = Player_AI(self.chemin[0],self.chemin)
+        self.ai_player = Player_AI(self.chemin[0],self.chemin, self.perception, self.player, self.map)
         
 
     def on_init(self):
         pygame.init()
+        pygame.event.pump()
         self._display_surf = pygame.display.set_mode((self.windowWidth, self.windowHeight), pygame.HWSURFACE)
         self._clock = pygame.time.Clock()
         pygame.display.set_caption("Dungeon Crawler")
@@ -223,7 +226,10 @@ class App:
 
             keys = pygame.key.get_pressed()
             self.on_keyboard_input(keys)
+            self.ai_player.maze = self.map
+            self.ai_player.player_size = self.player.get_size()
             self.ai_player.current_node = (math.floor((self.player.x)/self.maze.tile_size_x), math.floor(self.player.y/self.maze.tile_size_y))
+            self.ai_player.perception = self.maze.make_perception_list(self.player, self._display_surf)
             instruction = Player_AI.get_instruction(self.ai_player)
             # Check for doors
             if(len(self.maze.look_at_door(self.player, self._display_surf)) > 0):
@@ -233,7 +239,6 @@ class App:
             
             if self.ready_to_fight == False:
                 perception = self.maze.make_perception_list(self.player, self._display_surf)
-
                 if perception[3] != []:
                     print("Monster detected!")
                     self.KillMonster.setMonster(perception[3][0])
