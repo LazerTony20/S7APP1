@@ -59,8 +59,6 @@ class Player_AI:
             self.instruction = "DOWN"
         elif self.current_node[1] > self.remaining_nodes[0][1]:
             self.instruction = "UP"
-        print(self.perception[1])
-        print(len(self.perception[1]))
         if(len(self.perception[1]) != 0):
             if self.obstacleDansLeChemin(self.perception[1], self.player_size, self.instruction) == True:
                 print("obstacle dans le chemin")
@@ -69,7 +67,6 @@ class Player_AI:
             self.stuck += 1
             if self.stuck >= 5:
                 self.counter += 1
-        print("origine",self.instruction)
         if self.counter > 0 and self.counter <= 10:
             self.counter += 1
             match self.instruction:
@@ -84,10 +81,8 @@ class Player_AI:
                     case "BLOCKED":
                         self.instruction = "BLOCKED"
             self.stuck = 0
-            print("inversé",self.instruction)
         else:
             self.counter = 0
-        print("final",self.instruction)
         match self.instruction:
             case 'RIGHT':
                 self.instruction = "RIGHT"
