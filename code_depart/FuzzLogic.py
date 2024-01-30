@@ -45,9 +45,26 @@ class Dodge:
         ob_position['left'] = sk.trimf(ob_position.universe, [-10, -10, 2])
         ob_position['center'] = sk.trimf(ob_position.universe, [0, 0, 0])
         ob_position['right'] = sk.trimf(ob_position.universe, [-10, -10, 2])
-
+        
 
         # Rule for going straight when far or mid distance
+
+        rule_straight = control.Rule(inst_distance['far'] | inst_distance['mid'], to_go_position['straight'])
+        controller_rules.append(rule_straight)
+
+         # Rule for turning left when close and obstacle is on the right
+        rule_left = control.Rule(inst_distance['close'] & ob_position['right'], to_go_position['left'])
+        controller_rules.append(rule_left)
+
+        # Rule for turning right when close and obstacle is on the left
+        rule_right = control.Rule(inst_distance['close'] & ob_position['left'], to_go_position['right'])
+        controller_rules.append(rule_right)
+
+        # Default rule (go straight)
+        rule_default = control.Rule(~(rule_left.antecedent | rule_right.antecedent | rule_straight.antecedent), to_go_position['straight'])
+        controller_rules.append(rule_default)
+
+        """ # Rule for going straight when far or mid distance
         controller_rules.append(control.Rule(inst_distance['far'] or inst_distance['mid'], to_go_position['straight']))
 
         # Rules for turning left when close and obstacle is on the right
@@ -57,7 +74,7 @@ class Dodge:
         controller_rules.append(control.Rule(inst_distance['close'] and ob_position['left'], to_go_position['right']))
 
         # Default rule (go straight)
-        controller_rules.append(control.Rule(inst_distance['close'] and ob_position['left'] and ob_position['right'], to_go_position['straight']))
+        controller_rules.append(control.Rule(inst_distance['close'] and ob_position['left'] and ob_position['right'], to_go_position['straight'])) """
 
         """       #Si objet loin, continue
         controller_rules.append(control.Rule(inst_distance['far'], to_go_position['straight']))
@@ -125,9 +142,9 @@ class Dodge:
         
         self.initiate_fuzzy_logic_controller()
         if instruction == "DOWN" or instruction == "UP":
-            self.dodge.input['position'] = ob_mapped[0]
+            self.dodge.input['p_position'] = ob_mapped[0]
         else:
-            self.dodge.input['position'] = ob_mapped[1]
+            self.dodge.input['p_position'] = ob_mapped[1]
         self.dodge.compute()
         new_instruction = self.dodge.output["to_direction"]
         #Direction dans pour le jeu
