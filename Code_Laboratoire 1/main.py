@@ -79,6 +79,11 @@ if __name__ == '__main__':
                 # print("\nVoici la sortie :")
                 # print(result)
 
+        with PrologMQI() as mqi_file:
+            print("============= NUMERO 3 =============")
+            with mqi_file.create_thread() as prolog_thread:
+                # Load a prolog file
+                print(prolog_thread.query("[prolog/num3]."))
 
 print("\n=======================================")
 
